@@ -1,65 +1,86 @@
 <?php
 /**
+ * ========================================================================
  * CHILL42x Dispensary - Add Product (Admin Only)
- * รองรับการเพิ่มสินค้า 3 คลาสตามสถาปัตยกรรม OOP
- * ผสานคุณสมบัติจากส่วน Admin ในธีม Mostudio Dark Luxury
+ * ========================================================================
+ * ระบบจัดการหลังร้านสำหรับเพิ่มรายการสินค้าใหม่เข้าสู่สต็อก
+ * สอดคล้องกับ Class Diagram สินค้า 3 ประเภท (Flower, Oil, Plant) และ User Role (Admin)
  */
+
+// โหลดไฟล์ตัวช่วยตรวจสอบสิทธิ์ (Auth Helper)
 require_once __DIR__ . '/../includes/auth.php';
+
+// ป้องกันการเข้าถึง: ตรวจสอบว่าผู้ใช้ล็อกอินและมีสิทธิ์ Admin หรือไม่ หากไม่ใช่จะเตะไปหน้า login.php ทันที
 requireAdmin('../login.php');
 
+// โหลดคลาส Database (Singleton Pattern) สำหรับติดต่อฐานข้อมูล
 require_once __DIR__ . '/../config/Database.php';
 
+// ตัวแปรสำหรับเก็บข้อความแจ้งเตือนข้อผิดพลาดและข้อความสำเร็จ
 $errorMessage = '';
 $successMessage = '';
 
+// ตรวจสอบว่าผู้ใช้กด Submit ฟอร์มด้วย HTTP POST หรือไม่
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $type = trim($_POST['type'] ?? 'flower');
-    $basePrice = floatval($_POST['base_price'] ?? 0);
-    $description = trim($_POST['description'] ?? '');
-    $imageUrl = trim($_POST['image_url'] ?? '');
+    // 1. ดึงและล้างช่องว่าง (trim) ฟิลด์ข้อมูลพื้นฐานทั่วไปของสินค้า
+    $name = trim($_POST['name'] ?? '');                       // ชื่อสินค้า
+    $type = trim($_POST['type'] ?? 'flower');                 // ประเภทสินค้า (flower | oil | plant)
+    $basePrice = floatval($_POST['base_price'] ?? 0);         // ราคาตั้งต้น (แปลงเป็นทศนิยม float)
+    $description = trim($_POST['description'] ?? '');         // คำอธิบายสินค้า
+    $imageUrl = trim($_POST['image_url'] ?? '');              // ที่อยู่รูปภาพสินค้า
 
-    // ฟิลด์เฉพาะตามประเภท
+    // 2. ดึงฟิลด์เฉพาะตามประเภทสินค้า (Polymorphic Attributes)
+    // สำหรับดอกกัญชา (Flower): ชั่งขายเป็นกรัม, มีสายพันธุ์ (Strain) และค่า THC
     $strainType = ($type === 'flower') ? trim($_POST['strain_type'] ?? '') : null;
     $thcPercent = ($type === 'flower') ? floatval($_POST['thc_percent'] ?? 20.0) : null;
     $stockGrams = ($type === 'flower') ? floatval($_POST['stock_grams'] ?? 0) : null;
 
+    // สำหรับน้ำมันสกัด (Oil): นับขายเป็นขวด, มีวิธีการสกัด (Extraction Method)
     $extractionMethod = ($type === 'oil') ? trim($_POST['extraction_method'] ?? '') : null;
     $stockBottles = ($type === 'oil') ? intval($_POST['stock_bottles'] ?? 0) : null;
 
+    // สำหรับต้นพันธุ์ (Plant): นับขายเป็นต้น, มีอายุสัปดาห์ (Age Weeks)
     $ageWeeks = ($type === 'plant') ? intval($_POST['age_weeks'] ?? 0) : null;
     $stockPieces = ($type === 'plant') ? intval($_POST['stock_pieces'] ?? 0) : null;
 
+    // คำนวณสต็อกรวมให้อยู่ในรูปแบบตัวเลขสากล (Stock Quantity)
     $stockQuantity = ($type === 'flower') ? $stockGrams : (($type === 'oil') ? $stockBottles : $stockPieces);
 
+    // 3. กำหนดรูปภาพ Default ตามประเภทสินค้า หากผู้ใช้ไม่ได้ระบุ URL รูปมา
     if (empty($imageUrl)) {
         if ($type === 'flower') $imageUrl = 'assets/images/flower_kush.jpg';
         elseif ($type === 'oil') $imageUrl = 'assets/images/cannabis_oil.jpg';
         else $imageUrl = 'assets/images/cannabis_plant.jpg';
     }
 
-    // ตรวจสอบความถูกต้องของข้อมูล
+    // 4. ตรวจสอบความถูกต้องของข้อมูล (Validation Logic)
+    // เงื่อนไขที่ 1: ตรวจว่ากรอกชื่อ เลือกประเภท และราคาต้องมากกว่า 0 บาท
     if (empty($name) || empty($type) || $basePrice <= 0) {
         $errorMessage = 'กรุณากรอกชื่อสินค้า เลือกประเภทสินค้า และกำหนดราคาเริ่มต้นให้ถูกต้อง (> 0 บาท)';
+    // เงื่อนไขที่ 2: หากเป็นดอกกัญชา ต้องระบุสายพันธุ์ (Sativa, Indica, Hybrid)
     } elseif ($type === 'flower' && empty($strainType)) {
         $errorMessage = 'กรุณาระบุสายพันธุ์ (Strain Type) สำหรับช่อดอกกัญชา';
+    // เงื่อนไขที่ 3: หากเป็นน้ำมัน ต้องระบุวิธีการสกัด
     } elseif ($type === 'oil' && empty($extractionMethod)) {
         $errorMessage = 'กรุณาระบุวิธีการสกัด (Extraction Method) สำหรับน้ำมันสายหยอด';
     } else {
+        // ดึง PDO Connection ผ่าน Singleton Pattern
         $db = Database::getInstance()->getConnection();
+
+        // ตรวจสอบกรณีฐานข้อมูลออฟไลน์ (รองรับ In-Memory Fallback)
         if ($db === null) {
-            // โหมด In-Memory / Standalone Fallback
             $_SESSION['flash_success'] = "จำลองการเพิ่มสินค้า '{$name}' เรียบร้อยแล้ว (โหมด In-Memory)";
             header("Location: product-list.php");
             exit();
         } else {
             try {
-                // พยายามบันทึกแบบครอบคลุมทั้ง schema.sql และ database.sql
+                // 5. บันทึกข้อมูลสินค้าลงตาราง products ด้วย Prepared Statements ป้องกัน SQL Injection
                 try {
                     $stmt = $db->prepare("INSERT INTO products 
                         (name, type, product_type, base_price, strain_type, thc_percent, stock_grams, extraction_method, stock_bottles, age_weeks, stock_pieces, stock_quantity, image_url, description)
                         VALUES (:name, :type, :ptype, :base_price, :strain_type, :thc_percent, :stock_grams, :extraction_method, :stock_bottles, :age_weeks, :stock_pieces, :stock_quantity, :image_url, :description)");
 
+                    // ผูกตัวแปร Parameters และรันคำสั่ง Execute
                     $stmt->execute([
                         ':name' => $name,
                         ':type' => $type,
@@ -77,6 +98,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                         ':description' => $description
                     ]);
                 } catch (Exception $e1) {
+                    // Fallback สำหรับ Database Schema แบบกระชับ
                     $stmt = $db->prepare("INSERT INTO products 
                         (name, type, base_price, strain_type, stock_grams, extraction_method, stock_bottles, age_weeks, stock_pieces, description)
                         VALUES (:name, :type, :base_price, :strain_type, :stock_grams, :extraction_method, :stock_bottles, :age_weeks, :stock_pieces, :description)");
@@ -95,10 +117,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     ]);
                 }
 
+                // 6. เมื่อบันทึกสำเร็จ เก็บข้อความแจ้งเตือน Flash Message และ Redirect กลับไปหน้ารายการสินค้า
                 $_SESSION['flash_success'] = "เพิ่มสินค้า '{$name}' เข้าสู่ระบบ CHILL42x เรียบร้อยแล้ว";
                 header("Location: product-list.php");
                 exit();
             } catch (Exception $e) {
+                // หากเกิดข้อผิดพลาดในการรัน SQL
                 $errorMessage = 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage();
             }
         }
