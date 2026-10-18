@@ -2,6 +2,9 @@
 # .gitignore สำหรับโปรเจกต์ CHILL42x Dispensary POS
 # ========================================================================
 
+# โฟลเดอร์สำเนาเดิมจากการดาวน์โหลด (Local Backup)
+Miniproject-20260930T082558Z-1-001/
+
 # ไฟล์คุกกี้และไฟล์ทดสอบชั่วคราว (Temporary & Test Session Files)
 test_cookie*.txt
 test_cookie.txt
@@ -25,5 +28,5 @@ test_cookie2.txt
 Thumbs.db
 desktop.ini
 
-# Composer (หากมีการติดตั้ง vendor ในอนาคต)
+# Composer
 /vendor/

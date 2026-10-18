@@ -1,0 +1,8 @@
+{
+  "name": "sarawut027/weed-shop",
+  "description": "CHILL42x Dispensary POS & Management System",
+  "type": "project",
+  "require": {
+    "php": ">=8.0"
+  }
+}
