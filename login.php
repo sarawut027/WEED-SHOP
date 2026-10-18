@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 /**
  * ==============================================================================
  * 🌿 ระบบ CHILL42x Dispensary - หน้าเข้าสู่ระบบ (Login Page)
@@ -99,7 +103,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 // 🔴 กรณีที่ 2: ล็อกอินไม่ผ่าน (ชื่อหรือรหัสผ่านผิด)
                 $errorMessage = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (ลองใช้ admin/admin123 หรือ staff/staff123)';
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // ดักจับกรณีเกิดข้อผิดพลาดฉุกเฉิน เช่น ฐานข้อมูลดับ
             $errorMessage = 'เกิดข้อผิดพลาดของระบบ: ' . $e->getMessage();
         }

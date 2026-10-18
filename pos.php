@@ -13,7 +13,12 @@ require_once __DIR__ . '/classes/Customer.php';
 require_once __DIR__ . '/classes/PricingStrategy.php';
 require_once __DIR__ . '/classes/Order.php';
 
-$db = Database::getInstance()->getConnection();
+$db = null;
+try {
+    $db = Database::getInstance()->getConnection();
+} catch (\Throwable $e) {
+    $db = null;
+}
 $currentUser = getCurrentUser();
 
 $products = [];
@@ -34,7 +39,7 @@ if ($db !== null) {
         if ($stmt) {
             $products = $stmt->fetchAll();
         }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         $products = [];
     }
 }
@@ -141,7 +146,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action']) && 
                     if ($pRow) {
                         $productObj = ProductFactory::createFromRow($pRow);
                     }
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $productObj = null;
                 }
             }

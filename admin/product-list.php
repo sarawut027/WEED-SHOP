@@ -9,7 +9,12 @@ requireAdmin('../login.php');
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/ProductFactory.php';
 
-$db = Database::getInstance()->getConnection();
+$db = null;
+try {
+    $db = Database::getInstance()->getConnection();
+} catch (\Throwable $e) {
+    $db = null;
+}
 
 // จัดการการลบสินค้า
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id']) && $db !== null) {
@@ -18,7 +23,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
         $stmt = $db->prepare("DELETE FROM products WHERE id = :id");
         $stmt->execute([':id' => $deleteId]);
         $_SESSION['flash_success'] = "ลบสินค้ารหัส #{$deleteId} เรียบร้อยแล้ว";
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         $_SESSION['flash_error'] = "ไม่สามารถลบสินค้าได้: " . $e->getMessage();
     }
     header("Location: product-list.php");
@@ -77,7 +82,7 @@ if ($db !== null) {
         if ($statsStmt) {
             $stats = $statsStmt->fetch() ?: $stats;
         }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         $rawProducts = [];
     }
 }

@@ -201,6 +201,19 @@ $adminUser = new Admin(2, 'admin1', 'สมศักดิ์ ผู้จัด
 assertTest("Admin: canManageStock ต้องเป็น true", $adminUser->canManageStock() === true);
 assertTest("Admin: canViewReports ต้องเป็น true", $adminUser->canViewReports() === true);
 
+// ----------------------------------------------------
+// TEST 6.1: User Authentication (Security & Fallback)
+// ----------------------------------------------------
+echo "\n--- ทดสอบ 6.1: User Authentication (Security & Demo Fallback) ---\n";
+$authAdmin = User::authenticate('admin', 'admin123');
+assertTest("User::authenticate('admin', 'admin123') ต้องได้ User role admin", $authAdmin !== null && $authAdmin->getRole() === 'admin');
+
+$authStaff = User::authenticate('staff', 'staff123');
+assertTest("User::authenticate('staff', 'staff123') ต้องได้ User role staff", $authStaff !== null && $authStaff->getRole() === 'staff');
+
+$authInvalid = User::authenticate('hacker', 'wrongpassword');
+assertTest("User::authenticate ด้วยรหัสผ่านผิด ต้องได้ null", $authInvalid === null);
+
 echo "\n========================================================\n";
 echo "  สรุปผลการทดสอบ: ผ่าน {$passed} / {$total} การทดสอบ (" . round(($passed/$total)*100, 1) . "%)\n";
 echo "========================================================\n";

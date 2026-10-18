@@ -79,7 +79,7 @@ abstract class User {
             try {
                 require_once __DIR__ . '/../config/Database.php';
                 $pdo = Database::getInstance()->getConnection();
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $pdo = null;
             }
         }
@@ -95,7 +95,7 @@ abstract class User {
                         return self::createFromRow($userRow);
                     }
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 // Fallback to demo account if table not imported yet
             }
         }

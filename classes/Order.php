@@ -333,7 +333,7 @@ class Order {
                             $item['net_price'],
                         ]);
                     }
-                } catch (Exception $e1) {
+                } catch (\Throwable $e1) {
                     try {
                         // Fallback 1: แบบ database.sql เดิม
                         $insertOrder = $pdo->prepare(
@@ -372,7 +372,7 @@ class Order {
                                 $item['net_price'],
                             ]);
                         }
-                    } catch (Exception $schemaFallback) {
+                    } catch (\Throwable $schemaFallback) {
                         // Fallback 2: หากโครงสร้างตารางเป็นแบบ schema.sql
                         $insertOrder = $pdo->prepare(
                             "INSERT INTO orders (order_number, total_amount, discount_amount, net_amount, staff_name, customer_birthdate) 
@@ -407,7 +407,7 @@ class Order {
                 }
 
                 $pdo->commit();
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }

@@ -9,7 +9,12 @@ requireLogin('login.php');
 
 require_once __DIR__ . '/config/Database.php';
 
-$db = Database::getInstance()->getConnection();
+$db = null;
+try {
+    $db = Database::getInstance()->getConnection();
+} catch (\Throwable $e) {
+    $db = null;
+}
 
 $orderId = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 $order = null;
@@ -57,7 +62,7 @@ if ($db !== null) {
                 }
             }
         }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         $order = null;
     }
 }

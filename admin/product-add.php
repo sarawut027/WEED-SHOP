@@ -65,7 +65,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $errorMessage = 'กรุณาระบุวิธีการสกัด (Extraction Method) สำหรับน้ำมันสายหยอด';
     } else {
         // ดึง PDO Connection ผ่าน Singleton Pattern
-        $db = Database::getInstance()->getConnection();
+        $db = null;
+        try {
+            $db = Database::getInstance()->getConnection();
+        } catch (\Throwable $e) {
+            $db = null;
+        }
 
         // ตรวจสอบกรณีฐานข้อมูลออฟไลน์ (รองรับ In-Memory Fallback)
         if ($db === null) {
@@ -97,7 +102,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                         ':image_url' => $imageUrl,
                         ':description' => $description
                     ]);
-                } catch (Exception $e1) {
+                } catch (\Throwable $e1) {
                     // Fallback สำหรับ Database Schema แบบกระชับ
                     $stmt = $db->prepare("INSERT INTO products 
                         (name, type, base_price, strain_type, stock_grams, extraction_method, stock_bottles, age_weeks, stock_pieces, description)
@@ -121,7 +126,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $_SESSION['flash_success'] = "เพิ่มสินค้า '{$name}' เข้าสู่ระบบ CHILL42x เรียบร้อยแล้ว";
                 header("Location: product-list.php");
                 exit();
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 // หากเกิดข้อผิดพลาดในการรัน SQL
                 $errorMessage = 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage();
             }
