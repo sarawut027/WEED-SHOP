@@ -3,13 +3,22 @@
  * CHILL42x Dispensary - หน้าร้านค้าหลัก (Storefront Homepage)
  * Mostudio Dark Luxury Aesthetic & Showcase ผลิตภัณฑ์แนะนำยอดนิยม
  */
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/Database.php';
 require_once __DIR__ . '/classes/ProductFactory.php';
 require_once __DIR__ . '/classes/CustomerGuard.php';
 require_once __DIR__ . '/classes/Customer.php';
 
-$db = Database::getInstance()->getConnection();
+$db = null;
+try {
+    $db = Database::getInstance()->getConnection();
+} catch (\Throwable $e) {
+    $db = null;
+}
 
 $products = [];
 if ($db !== null) {
@@ -21,7 +30,7 @@ if ($db !== null) {
         if ($stmt) {
             $products = $stmt->fetchAll();
         }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         $products = [];
     }
 }

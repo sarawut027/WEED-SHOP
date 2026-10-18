@@ -68,7 +68,7 @@ class Database {
         try {
             // ทำการสร้าง Object PDO เชื่อมต่อไปยังฐานข้อมูล MySQL
             $this->pdo = new PDO($dsn, self::$username, self::$password, $options);
-        } catch (PDOException $e) {
+        } catch (\Throwable $e) {
             // หากเชื่อมต่อไม่สำเร็จ จะกำหนดให้ pdo เป็น null (ไม่ใช้ die() เพื่อให้ระบบทำงานต่อได้ในโหมด In-Memory / Mock)
             $this->pdo = null;
         }
