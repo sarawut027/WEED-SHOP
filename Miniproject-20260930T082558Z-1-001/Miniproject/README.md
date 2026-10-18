@@ -7,8 +7,10 @@
 
 ## 👥 ผู้พัฒนาโครงงาน (Developers)
 
-* **1. Somphong (011)**
-* **2. Sarawut (027)**
+* **1. Somphong (011)** - *ส่วนที่ 1: Business Logic, CustomerGuard, PricingStrategy, POS หน้าร้าน*
+* **2. Sarawut (027)** - *ส่วนที่ 2: Core Architecture, Database Singleton, Admin สต็อก, Unit Testing*
+
+🎤 **คู่มือและสคริปต์การนำเสนอ (สำหรับ 2 คน):** [คลิกเพื่อดู PRESENTATION_SCRIPT.md](PRESENTATION_SCRIPT.md)
 
 🏛️ **สาขาวิชาเทคโนโลยีสารสนเทศ**  
 คณะวิทยาศาสตร์และเทคโนโลยี **มหาวิทยาลัยราชภัฏนครปฐม** (Nakhon Pathom Rajabhat University)
