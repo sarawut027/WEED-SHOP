@@ -17,9 +17,9 @@
 | 🚀 **Live Production (Cloud):** | [https://weed-shop-production-907e.up.railway.app](https://weed-shop-production-907e.up.railway.app) | รันบน Cloud PaaS (Railway) ออนไลน์ 24 ชม. |
 | 💻 **Localhost (สำรอง):** | `http://localhost:8000` หรือ `http://localhost/Miniproject` | รันผ่าน XAMPP ในเครื่อง |
 | 📦 **GitHub Repository:** | [https://github.com/sarawut027/WEED-SHOP](https://github.com/sarawut027/WEED-SHOP) | มี Source Code, Unit Test และ Script ครบ |
-| 🧪 **Unit Test Runner:** | `.../test_runner.php` | ผ่าน **41/41 การทดสอบ (100% Pass Rate)** |
-| 👤 **Staff Account (หน้าร้าน):** | User: `staff` \| Pass: `1234` | มีปุ่ม Quick Fill กดล็อกอินได้ทันที |
-| 👑 **Admin Account (ผู้จัดการ):** | User: `admin` \| Pass: `1234` | เข้าถึงคลังสินค้าและสต็อกได้ทุกหน้า |
+| 🧪 **Unit Test Runner:** | `.../test_runner.php` | ผ่าน **44/44 การทดสอบ (100% Pass Rate)** |
+| 👤 **Staff Account (หน้าร้าน):** | User: `staff` \| Pass: `staff123` หรือ `1234` | มีปุ่ม Quick Fill กดล็อกอินได้ทันที |
+| 👑 **Admin Account (ผู้จัดการ):** | User: `admin` \| Pass: `admin123` หรือ `1234` | เข้าถึงคลังสินค้าและสต็อกได้ทุกหน้า |
 
 ---
 
@@ -40,7 +40,7 @@
 [01:00 - 04:30] คนที่ 1: Live Demo หน้าร้าน POS + CustomerGuard + Bulk Pricing + สลิปใบเสร็จ + โค้ด OOP
 [04:30 - 05:00] ส่งไม้ต่อ (Handover Transition) ให้คนที่ 2
 [05:00 - 07:15] คนที่ 2: Live Demo หลังร้าน Admin + ตรวจสอบสต็อกลดจริง + สถาปัตยกรรม OOP & Design Patterns
-[07:15 - 08:30] คนที่ 2: โชว์ระบบ Live Cloud CI/CD บน Railway + รัน Unit Test (41/41 ข้อ 100%)
+[07:15 - 08:30] คนที่ 2: โชว์ระบบ Live Cloud CI/CD บน Railway + รัน Unit Test (44/44 ข้อ 100%)
 [08:30 - 10:00] ทั้งสองคน: สรุปภาพรวมและเปิดช่วงถาม-ตอบ (Q&A)
 ```
 
